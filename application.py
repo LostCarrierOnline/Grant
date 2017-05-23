@@ -1,10 +1,9 @@
 import discord
 import asyncio
-from datetime import datetime
+from plugins import utc
 from plugins import callsign
 
 client = discord.Client()
-utc_time = datetime.utcnow()
 
 @client.event
 async def on_ready():
@@ -17,9 +16,9 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.content.startswith('!help'):
-        await client.send_message(message.channel, "Just a basic bot to answer simple radio quieries")  # line used to echo input not starting with [
+        await client.send_message(message.channel, "Just a basic bot to answer simple radio queries")  # line used to echo input not starting with [
     if message.content.startswith('!utc'):
-        await client.send_message(message.channel, utc_time)
+        await client.send_message(message.channel, utc.get_time())
     if message.content.startswith('!call'):
         msg = message.content
         split = msg.split(' ')
