@@ -22,7 +22,10 @@ async def on_message(message):
     if message.content.startswith('!call'):
         msg = message.content
         split = msg.split(' ')
-        await client.send_message(message.channel, callsign.callsign_start(split[1]))
+        try:
+            await client.send_message(message.channel, callsign.callsign_start(split[1]))
+        except:
+            await client.send_message(message.channel, "I'm sorry, was that a valid callsign?\r\nPlease check the call manually: http://radioreference.com/apps/ham/callsign/" + split[1])
     else:
         pass
 
