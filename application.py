@@ -3,6 +3,7 @@ from urllib.request import urlopen
 from discord import channel
 from plugins import utc
 from plugins import callsign
+from plugins import aprs
 
 client = discord.Client()
 
@@ -25,6 +26,18 @@ async def on_message(message):
         hand0.write(img)
         hand0.close()
         await client.send_file(message.channel, 'conditions.jpg')
+    if message.content.startswith('!aprs'):
+        await client.send_message(message.channel, 'Example: !aprs callsign sendcallsign passcode your message here')
+        #!apre:kr0siv:wb5od:passcode:this is the message
+        msg = message.content
+        split = msg.split(None, 4)
+        aprs_call = split[1]
+        aprs_tocall = split[2]
+        aprs_passcode = split[3]
+        aprs_message = split[4]
+        print(aprs_call, aprs_tocall, aprs_passcode, aprs_message)
+        aprs_tosend = aprs.sendmsg(aprs_call, aprs_tocall, aprs_passcode, aprs_message)
+        await client.send_message(message.channel, aprs_tosend)
 
 
     if message.content.startswith('!utc'):
