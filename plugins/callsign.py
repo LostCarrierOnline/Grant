@@ -39,13 +39,7 @@ def callsign_start(call):
     m = rg.search(content.decode('utf-8'))
     if m:
         ham_lic_class = m.group(1)
-        if ham_lic_class == '':
-            print("Class: (Club)" + "\n")
-        else:
-            clubcall = "Class: (" + ham_lic_class + ")" + "\n"
-            print(clubcall)
-            ham_lic_class = clubcall
-            return clubcall
+        print("Class: (" + ham_lic_class + ")" + "\n")
 
     # regex for ham license grant date, print to screen
     re5 = '<tr><th>Granted</th><td>(.*?)</td></tr>'
