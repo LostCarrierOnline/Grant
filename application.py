@@ -6,7 +6,7 @@ from plugins import callsign
 from plugins import aprs
 
 client = discord.Client()
-help_msg = "Hello there! Below are my current functions.\r\n \r\n !call\r\n Usage: !call callsign_here\r\n Function: Return operator license details\r\n \r\n !utc\r\n Useage: !utc\r\n Function: Return UTC time\r\n \r\n !conditions\r\n Useage: !conditions\r\n Function: Return current ham radio conditions\r\n \r\n !aprs\r\n Usage: !aprs callsign callsign_rx_party passcode message\r\n Function: Send an aprs message, requires license. Use only in a private message!"
+help_msg = "Hello there! Below are my current functions.\r\n \r\n !call\r\n Usage: !call callsign_here\r\n Function: Return operator license details\r\n \r\n !utc\r\n Useage: !utc\r\n Function: Return UTC time\r\n \r\n !conditions\r\n Useage: !conditions\r\n Function: Return current ham radio conditions\r\n \r\n !aprs\r\n Usage: !aprs callsign callsign_rx_party passcode message\r\n Function: Send an aprs message, requires license. Use only in a private message!\r\n \r\n !iss \r\n Useage: !iss \r\n Function: Grab the current position of the international space station."
 
 @client.event
 async def on_ready():
@@ -22,11 +22,20 @@ async def on_message(message):
     if message.content.startswith('!help'):
         await client.send_message(message.channel, help_msg)  # line used to echo input not starting with [
     if message.content.startswith('!conditions'):
+        #http://www.hamqsl.com/solarvhf.php" VHF
         img = urlopen("http://www.hamqsl.com/solar100sc.php").read()
         hand0 = open("conditions.jpg", "wb")
         hand0.write(img)
         hand0.close()
         await client.send_file(message.channel, 'conditions.jpg')
+    if message.content.startswith('!iss'):
+        #http://www.hamqsl.com/solarvhf.php" VHF
+        issimg = urlopen("http://www2.heavens-above.com/orbitdisplay.aspx?icon=iss&width=300&height=300&satid=25544").read()
+        hand0 = open("iss.gif", "wb")
+        hand0.write(issimg)
+        hand0.close()
+        await client.send_message(message.channel, 'Here is the current position of the ISS')
+        await client.send_file(message.channel, 'iss.gif')
     if message.content.startswith('!aprs'):
         await client.send_message(message.channel, 'Example: !aprs callsign sendcallsign passcode your message here')
         #!apre:kr0siv:wb5od:passcode:this is the message
