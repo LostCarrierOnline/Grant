@@ -6,6 +6,7 @@ from plugins import callsign
 from plugins import aprs
 
 client = discord.Client()
+help_msg = "Hello there! Below are my current functions.\r\n \r\n !call\r\n Usage: !call callsign_here\r\n Function: Return operator license details\r\n \r\n !utc\r\n Useage: !utc\r\n Function: Return UTC time\r\n \r\n !conditions\r\n Useage: !conditions\r\n Function: Return current ham radio conditions\r\n \r\n !aprs\r\n Usage: !aprs callsign callsign_rx_party passcode message\r\n Function: Send an aprs message, requires license. Use only in a private message!"
 
 @client.event
 async def on_ready():
@@ -19,7 +20,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.content.startswith('!help'):
-        await client.send_message(message.channel, "Just a basic bot to answer simple radio queries")  # line used to echo input not starting with [
+        await client.send_message(message.channel, help_msg)  # line used to echo input not starting with [
     if message.content.startswith('!conditions'):
         img = urlopen("http://www.hamqsl.com/solar100sc.php").read()
         hand0 = open("conditions.jpg", "wb")
