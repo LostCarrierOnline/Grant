@@ -4,9 +4,10 @@ from discord import channel
 from plugins import utc
 from plugins import callsign
 from plugins import aprs
+from plugins import fccid
 
 client = discord.Client()
-help_msg = "Hello there! Below are my current functions.\r\n \r\n !call\r\n Usage: !call callsign_here\r\n Function: Return operator license details\r\n \r\n !utc\r\n Useage: !utc\r\n Function: Return UTC time\r\n \r\n !conditions\r\n Useage: !conditions\r\n Function: Return current ham radio conditions\r\n \r\n !aprs\r\n Usage: !aprs callsign callsign_rx_party passcode message\r\n Function: Send an aprs message, requires license. Use only in a private message!\r\n \r\n !iss \r\n Useage: !iss \r\n Function: Grab the current position of the international space station."
+help_msg = "Hello there! Below are my current functions.\r\n \r\n !call\r\n Usage: !call callsign_here\r\n Function: Return operator license details\r\n \r\n !utc\r\n Useage: !utc\r\n Function: Return UTC time\r\n \r\n !conditions\r\n Useage: !conditions\r\n Function: Return current ham radio conditions\r\n \r\n !aprs\r\n Usage: !aprs callsign callsign_rx_party passcode message\r\n Function: Send an aprs message, requires license. Use only in a private message!\r\n \r\n !iss \r\n Useage: !iss \r\n Function: Grab the current position of the international space station. \r\n \r\n !id \r\n Usage: !id fcc-id-here \r\n Function: Grabs the url for the given FCC id."
 
 @client.event
 async def on_ready():
@@ -14,13 +15,22 @@ async def on_ready():
     print(client.user.name)
     print(client.user.id)
     print('------')
-    await client.change_presence(game=discord.Game(name=' |!help'))
+    await client.change_presence(game=discord.Game(name='Services / !help'))
 
+timeout = 25
 
 @client.event
 async def on_message(message):
     if message.content.startswith('!help'):
         await client.send_message(message.channel, help_msg)  # line used to echo input not starting with [
+    if message.content.startswith('!id'):
+        msg = message.content
+        split = msg.split(' ')
+        devid = split[1]
+        url1 = ('http://fccid.io/%s' % devid + '\\') ##to send the fccid link
+        await client.send_message(message.channel, fccid.dev(devid))
+        await client.send_message(message.channel, fccid.freq(devid))
+        await client.send_message(message.channel, url1)
     if message.content.startswith('!conditions'):
         #http://www.hamqsl.com/solarvhf.php" VHF
         img = urlopen("http://www.hamqsl.com/solar100sc.php").read()
@@ -28,6 +38,13 @@ async def on_message(message):
         hand0.write(img)
         hand0.close()
         await client.send_file(message.channel, 'conditions.jpg')
+    if message.content.startswith('!radar'):
+        #https://radar.weather.gov/Conus/Loop/NatLoop_Small.gif
+        img = urlopen("https://radar.weather.gov/Conus/Loop/NatLoop_Small.gif").read()
+        hand0 = open("radar.gif", "wb")
+        hand0.write(img)
+        hand0.close()
+        await client.send_file(message.channel, 'radar.gif')
     if message.content.startswith('!iss'):
         #http://www.hamqsl.com/solarvhf.php" VHF
         issimg = urlopen("http://www2.heavens-above.com/orbitdisplay.aspx?icon=iss&width=300&height=300&satid=25544").read()
