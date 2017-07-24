@@ -4,7 +4,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-.idea
 
 # C extensions
 *.so
@@ -96,8 +95,10 @@ ENV/
 # Rope project settings
 .ropeproject
 
-/rr_scrape.py
-/iss.gif
-/iss.jpg
-/radar.gif
+.gitignore
+.idea/
 conditions.jpg
+iss.gif
+iss.jpg
+plugins/__pycache__/
+radar.gif
