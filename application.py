@@ -7,7 +7,7 @@ from plugins import aprs
 from plugins import fccid
 
 client = discord.Client()
-help_msg = "Hello there! Below are my current functions.\r\n \r\n !call\r\n Usage: !call callsign_here\r\n Function: Return operator license details\r\n \r\n !utc\r\n Useage: !utc\r\n Function: Return UTC time\r\n \r\n !conditions\r\n Useage: !conditions\r\n Function: Return current ham radio conditions\r\n \r\n !aprs\r\n Usage: !aprs callsign callsign_rx_party passcode message\r\n Function: Send an aprs message, requires license. Use only in a private message!\r\n \r\n !iss \r\n Useage: !iss \r\n Function: Grab the current position of the international space station. \r\n \r\n !id \r\n Usage: !id fcc-id-here \r\n Function: Grabs the url for the given FCC id."
+help_msg = "Hello there! Below are my current functions.\r\n \r\n !call\r\n Usage: !call callsign_here\r\n Function: Return operator license details\r\n \r\n !utc\r\n Useage: !utc\r\n Function: Return UTC time\r\n \r\n !conditions\r\n Useage: !conditions\r\n Function: Return current ham radio conditions\r\n \r\n !aprs\r\n Usage: !aprs callsign callsign_rx_party passcode message\r\n Function: Send an aprs message, requires license. Use only in a private message!\r\n \r\n !iss \r\n Useage: !iss \r\n Function: Grab the current position of the international space station. \r\n \r\n !id \r\n Usage: !id fcc-id-here \r\n Function: Grabs the url for the given FCC id.\r\n\r\n Bot Developed and Maintained by Corrosive. Contact him if you have a problem with me..."
 
 @client.event
 async def on_ready():
@@ -24,13 +24,20 @@ async def on_message(message):
     if message.content.startswith('!help'):
         await client.send_message(message.channel, help_msg)  # line used to echo input not starting with [
     if message.content.startswith('!id'):
-        msg = message.content
-        split = msg.split(' ')
-        devid = split[1]
-        url1 = ('http://fccid.io/%s' % devid + '\\') ##to send the fccid link
-        await client.send_message(message.channel, fccid.dev(devid))
-        await client.send_message(message.channel, fccid.freq(devid))
-        await client.send_message(message.channel, url1)
+        try:
+            msg = message.content
+            split = msg.split(' ')
+            id = split[1]
+            url1 = ('http://fcc.io/%s\\' % id)
+            url2 = ('http://fccid.io/%s\\' % id)
+            title = fccid.manu(id)
+            freq = fccid.freq(id)
+            photos = fccid.internal(id)
+            power = fccid.power(id)
+            assembled = "```" + title + "\r\n" + freq + "\r\n" + power + "```" + "\r\n" + 'Details: ' + url2 + ' or ' + url1 + '\r\n' + photos
+            await client.send_message(message.channel, assembled)
+        except:
+            await client.send_message(message.channel, 'Something went wrong, here is the url. Take it or leave it ya prick!\r\n\r\n' + 'FCC.Gov: ' + url1 + '\r\n' + 'FCCID: ' + url2)
     if message.content.startswith('!conditions'):
         #http://www.hamqsl.com/solarvhf.php" VHF
         img = urlopen("http://www.hamqsl.com/solar100sc.php").read()

@@ -43,23 +43,62 @@ def start(fccid):
     #soup = soup.select('<h4>')
     #print(soup)
 
-def dev(fccid):
+def manu(fccid):
     page = requests.get("https://fccid.io/%s" % fccid)
     soup = BeautifulSoup(page.content, "lxml")
     title = soup.findAll("title")
-    dev = re.findall("<title>FCC ID " + fccid + ".(.*?)</title>", str(title))
-    return(dev)
+    data = re.findall("<title>FCC ID " + fccid + ".(.*?)</title>", str(title))
+    return(data[0])
 
 def freq(fccid):
     page = requests.get("https://fccid.io/%s" % fccid)
     soup = BeautifulSoup(page.content, "lxml")
     freqs = soup.findAll("div", {"class": "panel panel-primary"})
-    printme = re.findall("lower=(.*?)</a></td><td>",str(freqs))
-    printme2 = re.findall(r'>.*?\Z', str(printme[0]))
+    #printme = re.findall("lower=(.*?)</a></td><td>",str(freqs))
+    try:
+        printme = re.findall("lower=(.*?)</a>", str(freqs))
+        printme2 = re.findall(r'>.*?z', str(printme[0]))
+        finalfreq = printme2[0].replace('>', 'Frequency range: ')
+        return(finalfreq)
+    except:
+        return(' ')
 
-    print(printme2[0])
-    return(printme2[0])
 
+
+
+
+def power(fccid):
+    page = requests.get("https://fccid.io/%s" % fccid)
+    soup = BeautifulSoup(page.content, "lxml")
+    try:
+        power = soup.findAll("div", {"class": "panel panel-primary"})
+        radiostring = re.findall("Hz(.*?)_blank", str(power))
+        stripped = re.findall("</td><td>(.*?)</td><td>", str(radiostring[0]))
+        pwout = stripped[0]
+        #print(pwout)
+        return('Power: ' + pwout)
+    except:
+        return('')
+
+
+
+
+
+def internal(fccid):
+    page = requests.get("https://fccid.io/%s" % fccid)
+    soup = BeautifulSoup(page.content, "lxml")
+    grabclass = soup.findAll("div", {"class": "tab-pane fade active in"})
+    graburl = re.findall("href.*?Internal Photos", str(grabclass))
+    try:
+        edit1 = graburl[0].replace('href="', 'Internal Photos: ')
+        edit2 = edit1.replace('">Internal Photos', '.pdf')
+        return(edit2)
+    except:
+        return(' ')
+
+
+#power('GB8SD-700A')
+#internal('MWC406WIFI')
 
 #start('EW780-5735-02')
 #freq('EW780-5735-02')
